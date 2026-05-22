@@ -8,14 +8,12 @@
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
   :root {
-    /* 배경을 완전한 흰색(#ffffff)으로 변경 */
     --bg-main: #ffffff;
     --text: #1d1d1f;
     --muted: #6e6e73;
     --accent-main: #0071e3;
     --accent-indicator: #ff3b30;
     
-    /* 흰 배경 위에 부드럽게 얹어지도록 유리 투명도와 그림자 미세 조정 */
     --glass-bg: rgba(245, 247, 250, 0.6);
     --glass-border: rgba(0, 0, 0, 0.08);
     --card-glass: rgba(255, 255, 255, 0.8);
@@ -53,7 +51,6 @@
     width: 100%; max-width: 800px; z-index: 1;
   }
 
-  /* 흰 배경 위에서 고급스럽게 뜨는 미니멀 패널 스타일 */
   .panel-box {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
@@ -73,7 +70,6 @@
 
   .firms-grid { display: flex; gap: 12px; flex-wrap: wrap; }
 
-  /* 개별 카드 투명 유리 텍스처 */
   .firm-card {
     background: var(--card-glass);
     border: 1px solid rgba(0, 0, 0, 0.06);
@@ -95,7 +91,6 @@
     transition: all 0.3s ease;
   }
 
-  /* iOS 미니멀 슬라이더 */
   .slider-label {
     display: flex; justify-content: space-between; align-items: center;
     font-size: 0.9rem; font-weight: 600; margin-bottom: 12px;
@@ -118,7 +113,6 @@
 
   canvas { width: 100%; display: block; }
 
-  /* 설명 박스 젤리 유리 질감 */
   .explanation {
     background: rgba(245, 247, 250, 0.5);
     backdrop-filter: blur(20px);
@@ -147,13 +141,11 @@
 <p class="subtitle">슬라이더를 조절하여 가격 변동과 기업들의 시장 진입 상태를 관찰하세요</p>
 
 <div class="container">
-  <!-- Firms Component -->
   <div class="panel-box">
     <div class="section-title">기업별 진입 기준 가격 (최소 평균비용)</div>
     <div class="firms-grid" id="firmsGrid"></div>
   </div>
 
-  <!-- Slider Component -->
   <div class="panel-box">
     <div class="slider-label">
       <span>시장 가격 (P)</span>
@@ -165,7 +157,6 @@
     </div>
   </div>
 
-  <!-- Graph Component -->
   <div class="panel-box">
     <div class="section-title">장기 시장 공급곡선 그래프</div>
     <canvas id="supplyCanvas" height="320"></canvas>
@@ -185,7 +176,6 @@
     </div>
   </div>
 
-  <!-- Explanation Component -->
   <div class="explanation" id="explanation"></div>
 </div>
 
@@ -296,7 +286,7 @@ function draw(price) {
       const qEnd = cumQ2 + f.qty;
       const c1 = toCanvas(f.minAC, qStart, W, H, pad);
       const c2 = toCanvas(price, qEnd, W, H, pad);
-      ctx.fillStyle = f.color + '15'; // 흰 배경에 맞춰 조금 더 투명하게 조정
+      ctx.fillStyle = f.color + '15'; 
       ctx.fillRect(c1.x, c2.y, c2.x - c1.x, origin.y - c2.y);
       cumQ2 = qEnd;
       currentTotalQ = qEnd;
@@ -314,26 +304,39 @@ function draw(price) {
   });
   ctx.stroke();
 
-  // 균형 점선 인디케이터
+  // [버그 수정 완료] 독립적인 상태 컨텍스트 세팅으로 균형 지점 빨간 점선 무조건 표시
   const curCoord = toCanvas(price, currentTotalQ, W, H, pad);
+  ctx.save(); // 현재 캔버스 상태 저장
   ctx.strokeStyle = 'var(--accent-indicator)';
   ctx.lineWidth = 1.5;
-  ctx.setLineDash([4, 4]);
+  ctx.setLineDash([4, 4]); // 점선 패턴 정의
   
-  ctx.beginPath(); ctx.moveTo(origin.x, curCoord.y); ctx.lineTo(curCoord.x, curCoord.y); ctx.stroke();
+  // 수평 가이드 점선
+  ctx.beginPath(); 
+  ctx.moveTo(origin.x, curCoord.y); 
+  ctx.lineTo(curCoord.x, curCoord.y); 
+  ctx.stroke();
+  
+  // 수직 가이드 점선 (공급량이 있을 때만 내려오도록)
   if(currentTotalQ > 0) {
-    ctx.beginPath(); ctx.moveTo(curCoord.x, curCoord.y); ctx.lineTo(curCoord.x, origin.y); ctx.stroke();
+    ctx.beginPath(); 
+    ctx.moveTo(curCoord.x, curCoord.y); 
+    ctx.lineTo(curCoord.x, origin.y); 
+    ctx.stroke();
   }
-  ctx.setLineDash([]);
+  ctx.restore(); // 점선 설정을 해제하고 이전 상태 복구
 
+  // 축에 부착될 텍스트 인디케이터
   ctx.fillStyle = 'var(--accent-indicator)';
   ctx.font = '700 11px Pretendard, sans-serif';
   ctx.textAlign = 'right';
   ctx.fillText('P=' + price, origin.x - 8, curCoord.y + 4);
 
   if(currentTotalQ > 0) {
+    ctx.textBaseline = 'top';
     ctx.textAlign = 'center';
-    ctx.fillText('Q=' + currentTotalQ, curCoord.x, origin.y + 16);
+    ctx.fillText('Q=' + currentTotalQ, curCoord.x, origin.y + 6);
+    ctx.textBaseline = 'alphabetic'; // 기본값 복구
   }
 
   // 앵커 도트 그리기
@@ -398,7 +401,6 @@ function update(price) {
 
   draw(price);
 
-  // 하단 텍스트 가이드
   const expEl = document.getElementById('explanation');
   const activeFirmsText = enteredNames.map(name => `<strong>${name}</strong>`).join(', ');
 
