@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>장기 공급곡선</title>
+<title>장기 공급곡선 시뮬레이터</title>
 <style>
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
@@ -34,11 +34,9 @@
   }
 
   h1 {
-    font-family: 'Pretendard', sans-serif;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     color: var(--accent1);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.05em;
     text-align: center;
     border-bottom: 1px solid var(--border);
     padding-bottom: 12px;
@@ -47,9 +45,8 @@
   }
 
   .subtitle {
-    font-size: 0.78rem;
+    font-size: 0.85rem;
     color: var(--muted);
-    font-family: 'Pretendard', sans-serif;
     margin-top: 4px;
     text-align: center;
   }
@@ -62,8 +59,7 @@
     max-width: 800px;
   }
 
-  /* Slider */
-  .slider-section {
+  .slider-section, .firms-section, .graph-section {
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -71,8 +67,7 @@
   }
 
   .slider-label {
-    font-family: 'Pretendard', sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     color: var(--muted);
     margin-bottom: 10px;
     display: flex;
@@ -81,7 +76,7 @@
   }
 
   .price-value {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     color: var(--accent1);
     font-weight: 700;
   }
@@ -104,20 +99,11 @@
     box-shadow: 0 0 8px rgba(247,201,72,0.5);
   }
 
-  /* Firms strip */
-  .firms-section {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 24px;
-  }
-
   .section-title {
-    font-family: 'Pretendard', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     margin-bottom: 14px;
   }
 
@@ -130,50 +116,28 @@
   .firm-card {
     border-radius: 8px;
     padding: 10px 14px;
-    border: 1.5px solid;
-    transition: all 0.4s cubic-bezier(.4,0,.2,1);
-    min-width: 90px;
+    border: 1.5px solid var(--border);
+    transition: all 0.3s ease;
+    flex: 1;
+    min-width: 110px;
     text-align: center;
-    position: relative;
-    overflow: hidden;
   }
-
-  .firm-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.4s;
-  }
-
-  .firm-card.active::before { opacity: 0.12; }
 
   .firm-name {
-    font-family: 'Pretendard', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 700;
     margin-bottom: 4px;
   }
 
   .firm-cost {
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     color: var(--muted);
   }
 
   .firm-status {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     margin-top: 6px;
-    font-family: 'Pretendard', sans-serif;
     font-weight: 700;
-    letter-spacing: 0.05em;
-  }
-
-  /* Main graph */
-  .graph-section {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 24px;
   }
 
   canvas {
@@ -182,29 +146,24 @@
     border-radius: 6px;
   }
 
-  /* Explanation box */
   .explanation {
     background: var(--panel);
     border: 1px solid var(--border);
-    border-left: 3px solid var(--accent1);
+    border-left: 4px solid var(--accent1);
     border-radius: 12px;
     padding: 16px 20px;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     line-height: 1.75;
     color: var(--text);
-    min-height: 64px;
-    transition: all 0.3s;
   }
 
   .explanation strong { color: var(--accent1); }
 
-  /* Legend */
   .legend {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
-    font-family: 'Pretendard', sans-serif;
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     color: var(--muted);
     justify-content: center;
   }
@@ -215,26 +174,19 @@
     gap: 6px;
   }
 
-  .legend-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-  }
-  .legend-line {
-    width: 22px; height: 3px;
-    border-radius: 2px;
-  }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .legend-line { width: 22px; height: 3px; border-radius: 2px; }
 </style>
 </head>
 <body>
 
 <h1>Long-Run Market Supply Curve</h1>
-<p class="subtitle">가격(P)을 올려 기업들의 진입 순서를 확인하세요</p>
+<p class="subtitle">슬라이더를 움직여 가격 변동에 따른 기업들의 진입과 총 공급량을 확인하세요</p>
 
 <div class="container">
-
   <!-- Firms -->
   <div class="firms-section">
-    <div class="section-title">기업별 최소 평균비용 (AC<sub>min</sub>) — 진입 기준</div>
+    <div class="section-title">기업별 최소 평균비용 (AC_min) 및 진입 상태</div>
     <div class="firms-grid" id="firmsGrid"></div>
   </div>
 
@@ -245,7 +197,7 @@
       <span class="price-value" id="priceDisplay">P = 30</span>
     </div>
     <input type="range" id="priceSlider" min="10" max="110" value="30" step="1">
-    <div style="display:flex;justify-content:space-between;margin-top:6px;font-family:'Pretendard',sans-serif;font-size:0.68rem;color:var(--muted)">
+    <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.75rem;color:var(--muted)">
       <span>낮은 가격</span><span>높은 가격</span>
     </div>
   </div>
@@ -264,22 +216,18 @@
         <span>진입한 기업</span>
       </div>
       <div class="legend-item">
-        <div class="legend-dot" style="background:var(--border)"></div>
-        <span>미진입 기업</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-line" style="background:var(--accent2);height:2px;border-top:2px dashed var(--accent2);background:none"></div>
-        <span>현재 가격</span>
+        <div class="legend-line" style="border-top:2px dashed var(--accent2); width:22px; height:0;"></div>
+        <span>현재 가격 및 시장 공급량</span>
       </div>
     </div>
   </div>
 
   <!-- Explanation -->
   <div class="explanation" id="explanation"></div>
-
 </div>
 
 <script>
+// 원본 배열 데이터 (minAC 기준으로 미리 정렬해두면 로직이 훨씬 간결해집니다)
 const firms = [
   { name: 'Firm A', minAC: 20,  color: '#5ce0b0', qty: 15 },
   { name: 'Firm B', minAC: 35,  color: '#5c9ee0', qty: 18 },
@@ -287,7 +235,7 @@ const firms = [
   { name: 'Firm D', minAC: 65,  color: '#e0905c', qty: 25 },
   { name: 'Firm E', minAC: 80,  color: '#e05c5c', qty: 20 },
   { name: 'Firm F', minAC: 95,  color: '#e05c90', qty: 17 },
-];
+].sort((a, b) => a.minAC - b.minAC);
 
 // Build firms grid
 const grid = document.getElementById('firmsGrid');
@@ -295,43 +243,27 @@ firms.forEach((f, i) => {
   const card = document.createElement('div');
   card.className = 'firm-card';
   card.id = `firm-${i}`;
-  card.style.borderColor = f.color + '60';
   card.innerHTML = `
     <div class="firm-name" style="color:${f.color}">${f.name}</div>
     <div class="firm-cost">AC<sub>min</sub> = ${f.minAC}</div>
     <div class="firm-status" id="status-${i}">대기중</div>
   `;
-  card.querySelector('::before');
   grid.appendChild(card);
 });
 
-// Canvas setup
 const canvas = document.getElementById('supplyCanvas');
 const ctx = canvas.getContext('2d');
 
-function resize() {
-  const rect = canvas.parentElement.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = (rect.width - 48) * dpr;
-  canvas.height = 320 * dpr;
-  canvas.style.width = (rect.width - 48) + 'px';
-  canvas.style.height = '320px';
-  ctx.scale(dpr, dpr);
-  draw(+document.getElementById('priceSlider').value);
-}
-
-// Build supply curve points
-// cumulative qty as price rises
+// 공급곡선 좌표 생성
 function getSupplyCurvePoints() {
-  const sorted = [...firms].sort((a,b) => a.minAC - b.minAC);
   const pts = [{p: 0, q: 0}];
   let cumQ = 0;
-  sorted.forEach(f => {
-    pts.push({p: f.minAC, q: cumQ});       // just before entry: qty unchanged
+  firms.forEach(f => {
+    pts.push({p: f.minAC, q: cumQ});       
     cumQ += f.qty;
-    pts.push({p: f.minAC, q: cumQ});       // at entry price: qty jumps
+    pts.push({p: f.minAC, q: cumQ});       
   });
-  pts.push({p: 110, q: cumQ});
+  pts.push({p: 115, q: cumQ});
   return pts;
 }
 
@@ -346,69 +278,74 @@ function toCanvas(p, q, W, H, pad) {
 }
 
 function draw(price) {
-  const W = canvas.width / (window.devicePixelRatio||1);
-  const H = canvas.height / (window.devicePixelRatio||1);
-  const pad = {l:52, r:20, t:20, b:46};
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.width / dpr;
+  const H = canvas.height / dpr;
+  const pad = {l:55, r:25, t:20, b:46};
 
   ctx.clearRect(0,0,W,H);
 
-  // Background grid
+  // 배경 그리드
   ctx.strokeStyle = '#2a2a3840';
   ctx.lineWidth = 1;
-  for(let p=0; p<=110; p+=20) {
-    const {x:x0,y} = toCanvas(p,0,W,H,pad);
-    const {x:x1} = toCanvas(p,maxQ,W,H,pad);
+  for(let p=20; p<=100; p+=20) {
+    const {x:x0, y} = toCanvas(p, 0, W, H, pad);
+    const {x:x1} = toCanvas(p, maxQ, W, H, pad);
     ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke();
   }
-  for(let q=0; q<=maxQ; q+=20) {
-    const {x,y:y0} = toCanvas(0,q,W,H,pad);
-    const {x:bx,y:y1} = toCanvas(maxP,q,W,H,pad);
-    ctx.beginPath(); ctx.moveTo(x,y0); ctx.lineTo(bx,y1); ctx.stroke();
+  for(let q=20; q<=maxQ; q+=20) {
+    const {x, y0} = toCanvas(0, q, W, H, pad);
+    const {y:y1} = toCanvas(maxP, q, W, H, pad);
+    ctx.beginPath(); ctx.moveTo(x,pad.t); ctx.lineTo(x,H-pad.b); ctx.stroke();
   }
 
-  // Axes
+  // 축 그리기
   ctx.strokeStyle = '#555566';
   ctx.lineWidth = 1.5;
   const origin = toCanvas(0,0,W,H,pad);
-  const xEnd = toCanvas(0,maxQ+5,W,H,pad);
+  const xEnd = toCanvas(0,maxQ,W,H,pad);
   const yEnd = toCanvas(maxP,0,W,H,pad);
   ctx.beginPath(); ctx.moveTo(origin.x, origin.y); ctx.lineTo(xEnd.x, origin.y); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(origin.x, origin.y); ctx.lineTo(origin.x, yEnd.y); ctx.stroke();
 
-  // Axis labels
+  // 축 라벨
   ctx.fillStyle = '#888899';
   ctx.font = '11px Pretendard, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('Q (시장 공급량)', (origin.x + xEnd.x)/2, H - 8);
+  
   ctx.save();
-  ctx.translate(14, (origin.y + yEnd.y)/2);
+  ctx.translate(16, (origin.y + yEnd.y)/2);
   ctx.rotate(-Math.PI/2);
   ctx.fillText('P (가격)', 0, 0);
   ctx.restore();
 
-  // P axis ticks
-  [20,35,50,65,80,95].forEach(p => {
-    const {x,y} = toCanvas(p,0,W,H,pad);
-    ctx.fillStyle = '#666677';
-    ctx.font = '9px Pretendard';
-    ctx.textAlign = 'right';
-    ctx.fillText(p, x-2, origin.y+14);
+  // ★ [수정] Y축 가격 눈금 정상 위치로 변경
+  ctx.fillStyle = '#666677';
+  ctx.font = '10px Pretendard';
+  ctx.textAlign = 'right';
+  firms.forEach(f => {
+    const {x, y} = toCanvas(f.minAC, 0, W, H, pad);
+    ctx.fillText(f.minAC, x - 6, y + 4);
   });
 
-  // Shade active firms area
-  const activeFirms = firms.filter(f => price >= f.minAC);
+  // 진입 기업 영역 하이라이트 채우기
   let cumQ2 = 0;
-  activeFirms.sort((a,b)=>a.minAC-b.minAC).forEach(f => {
-    const qStart = cumQ2;
-    const qEnd = cumQ2 + f.qty;
-    const c1 = toCanvas(f.minAC, qStart, W,H,pad);
-    const c2 = toCanvas(price, qEnd, W,H,pad);
-    ctx.fillStyle = f.color + '18';
-    ctx.fillRect(c1.x, c2.y, c2.x - c1.x, origin.y - c2.y);
-    cumQ2 = qEnd;
+  let currentTotalQ = 0;
+  firms.forEach(f => {
+    if (price >= f.minAC) {
+      const qStart = cumQ2;
+      const qEnd = cumQ2 + f.qty;
+      const c1 = toCanvas(f.minAC, qStart, W, H, pad);
+      const c2 = toCanvas(price, qEnd, W, H, pad);
+      ctx.fillStyle = f.color + '15';
+      ctx.fillRect(c1.x, c2.y, c2.x - c1.x, origin.y - c2.y);
+      cumQ2 = qEnd;
+      currentTotalQ = qEnd;
+    }
   });
 
-  // Supply curve
+  // 공급 곡선 (노란색 선)
   ctx.beginPath();
   ctx.strokeStyle = '#f7c948';
   ctx.lineWidth = 3;
@@ -419,86 +356,119 @@ function draw(price) {
   });
   ctx.stroke();
 
-  // Current price line (dashed red)
-  const py = toCanvas(price,0,W,H,pad).y;
-  ctx.beginPath();
+  // ★ [개선] 현재 가격선 및 현재 공급량 가이드 점선
+  const curCoord = toCanvas(price, currentTotalQ, W, H, pad);
   ctx.strokeStyle = '#e05c5c';
   ctx.lineWidth = 1.5;
-  ctx.setLineDash([5,4]);
-  ctx.moveTo(origin.x, py);
-  ctx.lineTo(xEnd.x - 10, py);
+  ctx.setLineDash([4, 4]);
+  
+  // 수평 가격선
+  ctx.beginPath();
+  ctx.moveTo(origin.x, curCoord.y);
+  ctx.lineTo(curCoord.x, curCoord.y);
   ctx.stroke();
+  
+  // 수직 공급량선 (시장에 기업이 하나라도 진입했을 때만 수직선 표시)
+  if(currentTotalQ > 0) {
+    ctx.beginPath();
+    ctx.moveTo(curCoord.x, curCoord.y);
+    ctx.lineTo(curCoord.x, origin.y);
+    ctx.stroke();
+  }
   ctx.setLineDash([]);
 
-  // P label on y-axis
+  // 현재 가격 라벨 표시
   ctx.fillStyle = '#e05c5c';
   ctx.font = 'bold 11px Pretendard, sans-serif';
   ctx.textAlign = 'right';
-  ctx.fillText('P='+price, origin.x - 3, py + 4);
+  ctx.fillText('P=' + price, origin.x - 6, curCoord.y + 4);
 
-  // Entry points: dots where each firm enters
-  firms.sort((a,b)=>a.minAC-b.minAC).forEach((f, idx) => {
-    const cumBefore = firms.sort((a,b)=>a.minAC-b.minAC).slice(0,idx).reduce((s,x)=>s+x.qty,0);
+  // 현재 총공급량 라벨 표시
+  if(currentTotalQ > 0) {
+    ctx.textAlign = 'center';
+    ctx.fillText('Q=' + currentTotalQ, curCoord.x, origin.y + 16);
+  }
+
+  // 기업 진입점 앵커(도트) 표시
+  let cumBefore = 0;
+  firms.forEach((f, idx) => {
     const cumAfter = cumBefore + f.qty;
     const entered = price >= f.minAC;
-    // dot at entry corner
-    const {x,y} = toCanvas(f.minAC, cumAfter, W,H,pad);
+    const {x, y} = toCanvas(f.minAC, cumAfter, W, H, pad);
+    
     ctx.beginPath();
-    ctx.arc(x, y, 5, 0, Math.PI*2);
+    ctx.arc(x, y, 4, 0, Math.PI*2);
     ctx.fillStyle = entered ? f.color : '#2a2a38';
     ctx.fill();
     ctx.strokeStyle = f.color;
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // label
     if(entered) {
       ctx.fillStyle = f.color;
       ctx.font = '9px Pretendard, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(f.name, x+7, y+3);
+      ctx.fillText(f.name, x + 6, y - 4);
     }
+    cumBefore = cumAfter;
   });
-  // Re-sort to original
-  firms.sort((a,b)=>a.minAC-b.minAC);
 }
 
 function update(price) {
   document.getElementById('priceDisplay').textContent = 'P = ' + price;
 
-  // Update firm cards
-  const sortedFirms = [...firms].sort((a,b)=>a.minAC-b.minAC);
-  sortedFirms.forEach((f, i) => {
-    const origIdx = firms.indexOf(f);
-    const card = document.getElementById(`firm-${origIdx}`);
-    const statusEl = document.getElementById(`status-${origIdx}`);
+  // 기업 카드 상태 업데이트
+  let totalQ = 0;
+  const enteredNames = [];
+  const pendingFirms = [];
+
+  firms.forEach((f, i) => {
+    const card = document.getElementById(`firm-${i}`);
+    const statusEl = document.getElementById(`status-${i}`);
     const entered = price >= f.minAC;
-    card.style.borderColor = entered ? f.color : '#2a2a3860';
-    card.style.background = entered ? f.color + '15' : 'transparent';
-    statusEl.textContent = entered ? '✓ 진입' : '대기중';
-    statusEl.style.color = entered ? f.color : '#555566';
+    
+    if (entered) {
+      card.style.borderColor = f.color;
+      card.style.background = f.color + '12';
+      statusEl.textContent = '✓ 진입완료';
+      statusEl.style.color = f.color;
+      totalQ += f.qty;
+      enteredNames.push(f.name);
+    } else {
+      card.style.borderColor = 'var(--border)';
+      card.style.background = 'transparent';
+      statusEl.textContent = '대기중';
+      statusEl.style.color = 'var(--muted)';
+      pendingFirms.push(f);
+    }
   });
 
   draw(price);
 
-  // Explanation
-  const entered = firms.filter(f=>price>=f.minAC).sort((a,b)=>a.minAC-b.minAC);
-  const pending = firms.filter(f=>price<f.minAC).sort((a,b)=>a.minAC-b.minAC);
-  const totalQ = entered.reduce((s,f)=>s+f.qty,0);
-  let msg = '';
-  if(entered.length === 0) {
-    msg = `P = <strong>${price}</strong> 에서는 아직 진입한 기업이 없습니다. 가격을 올려보세요.`;
-  } else if(pending.length > 0) {
-    const next = pending[0];
-    msg = `P = <strong>${price}</strong>: <strong>${entered.map(f=>f.name).join(', ')}</strong>이 진입. 
-    총 공급량 = <strong>${totalQ}</strong>. 
-    다음 기업(${next.name}, AC<sub>min</sub>=<strong>${next.minAC}</strong>)은 가격이 더 올라야 진입합니다.`;
+  // 하단 안내 텍스트 업데이트
+  const expEl = document.getElementById('explanation');
+  if(enteredNames.length === 0) {
+    expEl.innerHTML = `P = <strong>${price}</strong> 공장 가동 최소 비용(${firms[0].minAC})보다 낮아 아직 진입한 기업이 없습니다. 가격을 더 올려보세요.`;
+  } else if(pendingFirms.length > 0) {
+    const next = pendingFirms[0];
+    expEl.innerHTML = `P = <strong>${price}</strong>: 현재 <strong>${enteredNames.join(', ')}</strong>이(가) 시장에 진입해 총 <strong>${totalQ}</strong>만큼 공급하고 있습니다. 다음 대기 기업인 <strong>${next.name}</strong>은 가격이 <strong>${next.minAC}</strong> 이상으로 올라야 진입합니다.`;
   } else {
-    msg = `P = <strong>${price}</strong>: 모든 기업(<strong>${entered.map(f=>f.name).join(', ')}</strong>)이 진입. 
-    시장 총 공급량 = <strong>${totalQ}</strong>. 
-    → 장기 공급곡선은 이렇게 가격 상승에 따라 <strong>우상향</strong>합니다.`;
+    expEl.innerHTML = `P = <strong>${price}</strong>: 모든 기업이 진입에 성공하여 시장 총 공급량은 <strong>${totalQ}</strong>입니다. 장기적으로 개별 기업들의 진입 기준 가격($AC_{min}$)이 다를 때, 시장 전체의 장기 공급곡선은 이처럼 <strong>우상향</strong>하는 계단 형태를 띠게 됩니다.`;
   }
-  document.getElementById('explanation').innerHTML = msg;
+}
+
+function resize() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = (rect.width - 48) * dpr;
+  canvas.height = 320 * dpr;
+  canvas.style.width = (rect.width - 48) + 'px';
+  canvas.style.height = '320px';
+  
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  
+  update(+document.getElementById('priceSlider').value);
 }
 
 document.getElementById('priceSlider').addEventListener('input', e => {
@@ -506,8 +476,9 @@ document.getElementById('priceSlider').addEventListener('input', e => {
 });
 
 window.addEventListener('resize', resize);
+
+// 초기 실행 순서 보장
 resize();
-update(30);
 </script>
 </body>
 </html>
