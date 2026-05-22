@@ -8,22 +8,23 @@
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
   :root {
-    /* 글라스모피즘을 돋보이게 할 은은한 파스텔 배경 오버레이 */
-    --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 50%, #fae8ff 100%);
-    --panel-glass: rgba(255, 255, 255, 0.45); /* 더 투명하게 조정 */
-    --panel-border: rgba(255, 255, 255, 0.6);  /* 빛반사를 표현하는 밝은 테두리 */
-    --card-glass: rgba(255, 255, 255, 0.3);
+    /* 글라스모피즘 투명도를 극대화할 수 있는 생동감 있는 딥 그라데이션 배경 */
+    --bg-main: #eff2f9;
     --text: #1d1d1f;
     --muted: #6e6e73;
     --accent-main: #0071e3;
     --accent-indicator: #ff3b30;
+    
+    /* 리얼 글라스 수치 제어: 더 투명하게, 더 흐리게 */
+    --glass-bg: rgba(255, 255, 255, 0.22);
+    --glass-border: rgba(255, 255, 255, 0.45);
+    --card-glass: rgba(255, 255, 255, 0.15);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--bg-gradient);
-    background-attachment: fixed;
+    background-color: var(--bg-main);
     color: var(--text);
     font-family: 'Pretendard', sans-serif;
     min-height: 100vh;
@@ -33,180 +34,140 @@
     align-items: center;
     gap: 24px;
     -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* [글라스 렌더링용 핵심 요소] 유리 뒤에서 투명도를 증명해 줄 화려한 네온 오일 구체들 */
+  .bg-glow-1 {
+    position: fixed; top: 15%; left: 15%; width: 350px; height: 350px;
+    background: linear-gradient(135deg, #80cafb 0%, #4c47f5 100%);
+    border-radius: 50%; filter: blur(60px); opacity: 0.45; z-index: -1;
+    animation: float 12s infinite alternate ease-in-out;
+  }
+  .bg-glow-2 {
+    position: fixed; bottom: 15%; right: 10%; width: 400px; height: 400px;
+    background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+    border-radius: 50%; filter: blur(70px); opacity: 0.5; z-index: -1;
+    animation: float 16s infinite alternate-reverse ease-in-out;
+  }
+
+  @keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(40px, 30px) scale(1.1); }
   }
 
   h1 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    text-align: center;
-    color: #111827;
+    font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em;
+    text-align: center; color: #111827; text-shadow: 0 2px 4px rgba(0,0,0,0.02);
   }
 
   .subtitle {
-    font-size: 0.9rem;
-    color: var(--muted);
-    margin-top: -16px;
-    text-align: center;
-    font-weight: 500;
+    font-size: 0.9rem; color: var(--muted); margin-top: -16px;
+    text-align: center; font-weight: 500;
   }
 
   .container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    max-width: 800px;
+    display: flex; flex-direction: column; gap: 20px;
+    width: 100%; max-width: 800px; z-index: 1; /* 구체 레이어 위로 배치 */
   }
 
-  /* 진짜 유리 같은 글라스모피즘 패널 디테일 */
+  /* 서리가 내린 듯 영롱하고 두꺼운 유리 질감 패널 */
   .panel-box {
-    background: var(--panel-glass);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid var(--panel-border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(35px) saturate(200%);
+    -webkit-backdrop-filter: blur(35px) saturate(200%);
+    border: 1px solid var(--glass-border);
     border-radius: 24px;
     padding: 24px;
-    /* 내부 입체감을 위한 이중 그림자 */
+    /* 공중에 떠 있는 듯한 입체감을 주는 더블 섀도우 효과 */
     box-shadow: 
-      0 4px 30px rgba(0, 0, 0, 0.03),
-      inset 0 1px 1px rgba(255, 255, 255, 0.5);
+      0 12px 40px rgba(31, 38, 135, 0.06),
+      inset 0 1px 2px rgba(255, 255, 255, 0.6);
   }
 
   .section-title {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #4b5563;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    margin-bottom: 16px;
+    font-size: 0.82rem; font-weight: 600; color: #3a3a3c;
+    text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 16px;
   }
 
-  .firms-grid {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
+  .firms-grid { display: flex; gap: 12px; flex-wrap: wrap; }
 
-  /* 개별 기업 카드도 글라스 텍스처 적용 */
+  /* 개별 카드 투명 유리 텍스처 극대화 */
   .firm-card {
     background: var(--card-glass);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 18px;
     padding: 14px;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    flex: 1;
-    min-width: 110px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+    flex: 1; min-width: 115px; text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
   }
 
-  .firm-name {
-    font-size: 0.95rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-
-  .firm-cost {
-    font-size: 0.8rem;
-    color: var(--muted);
-    font-weight: 500;
-  }
+  .firm-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+  .firm-cost { font-size: 0.8rem; color: var(--text); font-weight: 600; }
 
   .firm-status {
-    font-size: 0.72rem;
-    margin-top: 10px;
-    font-weight: 700;
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    background: rgba(0, 0, 0, 0.04);
-    color: var(--muted);
+    font-size: 0.72rem; margin-top: 10px; font-weight: 700;
+    display: inline-block; padding: 4px 12px; border-radius: 20px;
+    background: rgba(255, 255, 255, 0.4); color: var(--muted);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     transition: all 0.3s ease;
   }
 
-  /* iOS 스타일 슬라이더 UI */
+  /* iOS 미니멀 슬라이더 */
   .slider-label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.9rem; font-weight: 600; margin-bottom: 12px;
   }
 
-  .price-value {
-    font-size: 1.4rem;
-    color: var(--accent-main);
-    font-weight: 700;
-  }
+  .price-value { font-size: 1.4rem; color: var(--accent-main); font-weight: 700; }
 
   input[type=range] {
-    width: 100%;
-    -webkit-appearance: none;
-    height: 8px;
-    border-radius: 4px;
-    background: rgba(0, 0, 0, 0.06);
-    outline: none;
-    cursor: pointer;
+    width: 100%; -webkit-appearance: none; height: 7px; border-radius: 4px;
+    background: rgba(0, 0, 0, 0.06); outline: none; cursor: pointer;
   }
   
   input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 0.5px solid rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-    transition: transform 0.1s;
+    -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%;
+    background: #ffffff; border: 0.5px solid rgba(0, 0, 0, 0.15); cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.1s;
   }
 
-  input[type=range]::-webkit-slider-thumb:active {
-    transform: scale(1.15);
-  }
+  input[type=range]::-webkit-slider-thumb:active { transform: scale(1.15); }
 
-  canvas {
-    width: 100%;
-    display: block;
-  }
+  canvas { width: 100%; display: block; }
 
-  /* 설명 박스 글라스모피즘화 */
+  /* 설명 박스 매끄러운 젤리 유리 질감 */
   .explanation {
-    background: var(--panel-glass);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid var(--panel-border);
-    border-left: 5px solid var(--accent-main);
-    border-radius: 18px;
-    padding: 20px 24px;
-    font-size: 0.92rem;
-    line-height: 1.7;
-    color: #2c3e50;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(35px) saturate(200%);
+    -webkit-backdrop-filter: blur(35px) saturate(200%);
+    border: 1px solid var(--glass-border);
+    border-left: 6px solid var(--accent-main);
+    border-radius: 20px; padding: 20px 24px;
+    font-size: 0.92rem; line-height: 1.7; color: #222224;
+    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.04), inset 0 1px 2px rgba(255,255,255,0.5);
   }
 
   .explanation strong { color: var(--accent-main); font-weight: 700; }
 
   .legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--muted);
-    justify-content: center;
-    margin-top: 16px;
+    display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.75rem;
+    font-weight: 600; color: var(--muted); justify-content: center; margin-top: 16px;
   }
-
   .legend-item { display: flex; align-items: center; gap: 6px; }
   .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
   .legend-line { width: 20px; height: 3px; border-radius: 2px; }
 </style>
 </head>
 <body>
+
+<!-- 글라스모피즘 입체감을 유도할 고스트 이펙트 백그라운드 -->
+<div class="bg-glow-1"></div>
+<div class="bg-glow-2"></div>
 
 <h1>Long-Run Market Supply Curve</h1>
 <p class="subtitle">슬라이더를 조절하여 가격 변동과 기업들의 시장 진입 상태를 관찰하세요</p>
@@ -225,7 +186,7 @@
       <span class="price-value" id="priceDisplay">P = 30</span>
     </div>
     <input type="range" id="priceSlider" min="10" max="110" value="30" step="1">
-    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:0.75rem;font-weight:500;color:var(--muted)">
+    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:0.75rem;font-weight:600;color:var(--muted)">
       <span>낮은 가격 시장</span><span>높은 가격 시장</span>
     </div>
   </div>
@@ -256,12 +217,12 @@
 
 <script>
 const firms = [
-  { name: 'Firm A', minAC: 20,  color: '#34c759', qty: 15 },
+  { name: 'Firm A', minAC: 20,  color: '#24b649', qty: 15 },
   { name: 'Firm B', minAC: 35,  color: '#0071e3', qty: 18 },
-  { name: 'Firm C', minAC: 50,  color: '#af52de', qty: 22 },
+  { name: 'Firm C', minAC: 50,  color: '#aa42de', qty: 22 },
   { name: 'Firm D', minAC: 65,  color: '#ff9500', qty: 25 },
   { name: 'Firm E', minAC: 80,  color: '#ff3b30', qty: 20 },
-  { name: 'Firm F', minAC: 95,  color: '#5ac8fa', qty: 17 },
+  { name: 'Firm F', minAC: 95,  color: '#40b8ea', qty: 17 },
 ];
 
 const grid = document.getElementById('firmsGrid');
@@ -310,8 +271,8 @@ function draw(price) {
 
   ctx.clearRect(0, 0, W, H);
 
-  // 흐릿한 그리드선 격자
-  ctx.strokeStyle = 'rgba(0, 0, 0, 0.03)';
+  // 얇고 은은한 그래프 내부 눈금선
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.04)';
   ctx.lineWidth = 1;
   for(let p=20; p<=100; p+=20) {
     const {x:x0, y} = toCanvas(p, 0, W, H, pad);
@@ -323,14 +284,14 @@ function draw(price) {
     ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, H-pad.b); ctx.stroke();
   }
 
-  // 축 디자인
-  ctx.strokeStyle = 'rgba(0,0,0,0.15)';
-  ctx.lineWidth = 1.2;
+  // 메인 축선
+  ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+  ctx.lineWidth = 1.5;
   const origin = toCanvas(0, 0, W, H, pad);
   const xEnd = toCanvas(0, maxQ, W, H, pad);
   const yEnd = toCanvas(maxP, 0, W, H, pad);
   ctx.beginPath(); ctx.moveTo(origin.x, origin.y); ctx.lineTo(xEnd.x, origin.y); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(origin.x, origin.y); ctx.lineTo(origin.x, yEnd.y); stroke();
+  ctx.beginPath(); ctx.moveTo(origin.x, origin.y); ctx.lineTo(origin.x, yEnd.y); ctx.stroke();
 
   ctx.fillStyle = 'var(--muted)';
   ctx.font = '600 11px Pretendard, sans-serif';
@@ -343,15 +304,15 @@ function draw(price) {
   ctx.fillText('P (가격)', 0, 0);
   ctx.restore();
 
-  ctx.fillStyle = '#8e8e93';
-  ctx.font = '500 10px Pretendard';
+  ctx.fillStyle = '#55555a';
+  ctx.font = '600 10px Pretendard';
   ctx.textAlign = 'right';
   firms.forEach(f => {
     const {x, y} = toCanvas(f.minAC, 0, W, H, pad);
     ctx.fillText(f.minAC, x - 8, y + 3);
   });
 
-  // 진입 기업 영역 채우기 효과
+  // 유리에 투명하게 맺히는 수확/공급 면적 드로잉
   let cumQ2 = 0;
   let currentTotalQ = 0;
   firms.forEach(f => {
@@ -360,17 +321,17 @@ function draw(price) {
       const qEnd = cumQ2 + f.qty;
       const c1 = toCanvas(f.minAC, qStart, W, H, pad);
       const c2 = toCanvas(price, qEnd, W, H, pad);
-      ctx.fillStyle = f.color + '14'; /* 투명한 유리에 컬러가 맺히는 느낌 */
+      ctx.fillStyle = f.color + '22'; /* 투명 젤리 면적 광택 구현 */
       ctx.fillRect(c1.x, c2.y, c2.x - c1.x, origin.y - c2.y);
       cumQ2 = qEnd;
       currentTotalQ = qEnd;
     }
   });
 
-  // 공급 곡선 본선
+  // 우상향 공급 본선
   ctx.beginPath();
   ctx.strokeStyle = 'var(--accent-main)';
-  ctx.lineWidth = 3.5;
+  ctx.lineWidth = 4;
   ctx.lineJoin = 'round';
   supplyPts.forEach((pt, i) => {
     const {x, y} = toCanvas(pt.p, pt.q, W, H, pad);
@@ -378,22 +339,15 @@ function draw(price) {
   });
   ctx.stroke();
 
-  // 인디케이터 라인
+  // 균형 포인트 점선 가이드
   const curCoord = toCanvas(price, currentTotalQ, W, H, pad);
   ctx.strokeStyle = 'var(--accent-indicator)';
-  ctx.lineWidth = 1.2;
+  ctx.lineWidth = 1.5;
   ctx.setLineDash([4, 4]);
   
-  ctx.beginPath();
-  ctx.moveTo(origin.x, curCoord.y);
-  ctx.lineTo(curCoord.x, curCoord.y);
-  ctx.stroke();
-  
+  ctx.beginPath(); ctx.moveTo(origin.x, curCoord.y); ctx.lineTo(curCoord.x, curCoord.y); ctx.stroke();
   if(currentTotalQ > 0) {
-    ctx.beginPath();
-    ctx.moveTo(curCoord.x, curCoord.y);
-    ctx.lineTo(curCoord.x, origin.y);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(curCoord.x, curCoord.y); ctx.lineTo(curCoord.x, origin.y); ctx.stroke();
   }
   ctx.setLineDash([]);
 
@@ -407,7 +361,7 @@ function draw(price) {
     ctx.fillText('Q=' + currentTotalQ, curCoord.x, origin.y + 16);
   }
 
-  // 도트 처리
+  // 앵커 포인트 서클 칩 드로잉
   let cumBefore = 0;
   firms.forEach((f) => {
     const cumAfter = cumBefore + f.qty;
@@ -415,20 +369,15 @@ function draw(price) {
     const {x, y} = toCanvas(f.minAC, cumAfter, W, H, pad);
     
     ctx.beginPath();
-    ctx.arc(x, y, 5, 0, Math.PI*2);
+    ctx.arc(x, y, 5.5, 0, Math.PI*2);
     ctx.fillStyle = entered ? f.color : '#ffffff';
     ctx.fill();
     ctx.strokeStyle = entered ? '#ffffff' : f.color;
-    ctx.lineWidth = entered ? 2 : 1.5;
+    ctx.lineWidth = entered ? 2.5 : 2;
     ctx.stroke();
 
-    if(!entered) {
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, Math.PI*2);
-      ctx.strokeStyle = f.color;
-      ctx.stroke();
-    } else {
-      ctx.fillStyle = f.color;
+    if(entered) {
+      ctx.fillStyle = '#1d1d1f';
       ctx.font = '700 10px Pretendard, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText(f.name, x + 8, y - 2);
@@ -450,39 +399,47 @@ function update(price) {
     const entered = price >= f.minAC;
     
     if (entered) {
-      // 진입 시 매끄럽게 물드는 유리 질감 카드
+      // 투명 유리에 고유 네온 컬러가 스며드는 듯한 광택 연출
       card.style.borderColor = f.color;
-      card.style.background = f.color + '14'; 
-      card.style.transform = 'translateY(-4px)';
-      card.style.boxShadow = `0 12px 24px ${f.color}20`;
+      card.style.background = f.color + '22'; 
+      card.style.transform = 'translateY(-5px) scale(1.02)';
+      card.style.boxShadow = `0 14px 28px ${f.color}28, inset 0 1px 1px rgba(255,255,255,0.4)`;
       statusEl.textContent = '진입 완료';
       statusEl.style.color = '#ffffff';
       statusEl.style.background = f.color;
+      statusEl.style.borderColor = 'transparent';
       totalQ += f.qty;
       enteredNames.push(f.name);
     } else {
-      card.style.borderColor = 'var(--panel-border)';
+      card.style.borderColor = 'rgba(255,255,255,0.45)';
       card.style.background = 'var(--card-glass)';
-      card.style.transform = 'translateY(0)';
-      card.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.01)';
+      card.style.transform = 'translateY(0) scale(1)';
+      card.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.01)';
       statusEl.textContent = '대기중';
       statusEl.style.color = 'var(--muted)';
-      statusEl.style.background = 'rgba(0, 0, 0, 0.05)';
-      pendingFirms.push(f);
+      statusEl.style.background = 'rgba(255, 255, 255, 0.3)';
+      statusEl.style.borderColor = 'rgba(255, 255, 255, 0.4)';
     }
   });
 
   draw(price);
 
-  // [수정 완료] 어색한 '버블 활성화' 문구를 지우고 자연스러운 '진입'으로 일원화
+  // [수정 완료] 피드백 반영: '버블 활성화' 표현 제외 및 자연스러운 '진입' 문구 통일
   const expEl = document.getElementById('explanation');
+  const activeFirmsText = enteredNames.map(name => `<strong>${name}</strong>`).join(', ');
+
   if(enteredNames.length === 0) {
     expEl.innerHTML = `현재 가격 <strong>${price}</strong>: 아직 어떤 기업도 공장을 돌릴 수 있는 최소 장기 평균비용을 충족하지 못해 시장 공급량이 <strong>0</strong>인 상태입니다.`;
-  } else if(pendingFirms.length > 0) {
-    const next = pendingFirms[0];
-    expEl.innerHTML = `현재 가격 <strong>${price}</strong>: 장기 생산 기준을 통과한 <strong>${enteredNames.join(', ')}</strong>이 시장에 진입하여 총 <strong>${totalQ}</strong>만큼 공급하고 있습니다. 다음 타자인 <strong>${next.name}</strong>은 가격이 <strong>${next.minAC}</strong>에 도달할 때 진입하게 됩니다.`;
   } else {
-    expEl.innerHTML = `현재 가격 <strong>${price}</strong>: 모든 기업(<strong>${enteredNames.join(', ')}</strong>)이 진입해 최대 생산량인 <strong>${totalQ}</strong>를 공급하고 있습니다. 이처럼 생산 효율성이 각기 다른 주체들이 이윤 조건에 맞춰 순차적으로 진입하면서 전체 공급선은 우상향하는 형태를 띱니다.`;
+    // 아직 진입 안 한 기업 분류
+    firms.forEach(f => { if(price < f.minAC) pendingFirms.push(f); });
+    
+    if(pendingFirms.length > 0) {
+      const next = pendingFirms[0];
+      expEl.innerHTML = `현재 가격 <strong>${price}</strong>: 장기 생산 기준을 통과한 ${activeFirmsText}이 시장에 진입하여 총 <strong>${totalQ}</strong>만큼 공급하고 있습니다. 다음 타자인 <strong>${next.name}</strong>은 가격이 <strong>${next.minAC}</strong>에 도달할 때 진입하게 됩니다.`;
+    } else {
+      expEl.innerHTML = `현재 가격 <strong>${price}</strong>: 모든 기업(${activeFirmsText})이 시장에 진입하여 최대 생산량인 <strong>${totalQ}</strong>를 공급하고 있습니다. 이처럼 생산 효율성이 각기 다른 주체들이 이윤 조건에 맞춰 순차적으로 진입하면서 전체 공급선은 우상향하는 형태를 띱니다.`;
+    }
   }
 }
 
