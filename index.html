@@ -8,14 +8,13 @@
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
   :root {
-    /* 글라스모피즘 투명도를 극대화할 수 있는 생동감 있는 딥 그라데이션 배경 */
     --bg-main: #eff2f9;
     --text: #1d1d1f;
     --muted: #6e6e73;
     --accent-main: #0071e3;
     --accent-indicator: #ff3b30;
     
-    /* 리얼 글라스 수치 제어: 더 투명하게, 더 흐리게 */
+    /* 리얼 글라스 수치: 더 투명하게, 더 흐리게 */
     --glass-bg: rgba(255, 255, 255, 0.22);
     --glass-border: rgba(255, 255, 255, 0.45);
     --card-glass: rgba(255, 255, 255, 0.15);
@@ -38,7 +37,7 @@
     overflow-x: hidden;
   }
 
-  /* [글라스 렌더링용 핵심 요소] 유리 뒤에서 투명도를 증명해 줄 화려한 네온 오일 구체들 */
+  /* 유리 뒤에서 투명도를 증명해 줄 화려한 네온 오일 구체들 */
   .bg-glow-1 {
     position: fixed; top: 15%; left: 15%; width: 350px; height: 350px;
     background: linear-gradient(135deg, #80cafb 0%, #4c47f5 100%);
@@ -69,7 +68,7 @@
 
   .container {
     display: flex; flex-direction: column; gap: 20px;
-    width: 100%; max-width: 800px; z-index: 1; /* 구체 레이어 위로 배치 */
+    width: 100%; max-width: 800px; z-index: 1;
   }
 
   /* 서리가 내린 듯 영롱하고 두꺼운 유리 질감 패널 */
@@ -80,7 +79,6 @@
     border: 1px solid var(--glass-border);
     border-radius: 24px;
     padding: 24px;
-    /* 공중에 떠 있는 듯한 입체감을 주는 더블 섀도우 효과 */
     box-shadow: 
       0 12px 40px rgba(31, 38, 135, 0.06),
       inset 0 1px 2px rgba(255, 255, 255, 0.6);
@@ -93,7 +91,7 @@
 
   .firms-grid { display: flex; gap: 12px; flex-wrap: wrap; }
 
-  /* 개별 카드 투명 유리 텍스처 극대화 */
+  /* 개별 카드 투명 유리 텍스처 */
   .firm-card {
     background: var(--card-glass);
     backdrop-filter: blur(10px);
@@ -140,7 +138,7 @@
 
   canvas { width: 100%; display: block; }
 
-  /* 설명 박스 매끄러운 젤리 유리 질감 */
+  /* 설명 박스 젤리 유리 질감 */
   .explanation {
     background: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(35px) saturate(200%);
@@ -165,7 +163,7 @@
 </head>
 <body>
 
-<!-- 글라스모피즘 입체감을 유도할 고스트 이펙트 백그라운드 -->
+<!-- 뒷배경에 위치하여 유리를 투명하게 돋보이게 해주는 오브젝트 -->
 <div class="bg-glow-1"></div>
 <div class="bg-glow-2"></div>
 
@@ -271,7 +269,7 @@ function draw(price) {
 
   ctx.clearRect(0, 0, W, H);
 
-  // 얇고 은은한 그래프 내부 눈금선
+  // 내부 모던 점선 가이드
   ctx.strokeStyle = 'rgba(0, 0, 0, 0.04)';
   ctx.lineWidth = 1;
   for(let p=20; p<=100; p+=20) {
@@ -284,12 +282,13 @@ function draw(price) {
     ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, H-pad.b); ctx.stroke();
   }
 
-  // 메인 축선
-  ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+  // [복구 완료] 축 드로잉 오류 완벽 수정 (ctx.stroke() 누락 수정)
+  ctx.strokeStyle = 'rgba(0,0,0,0.18)';
   ctx.lineWidth = 1.5;
   const origin = toCanvas(0, 0, W, H, pad);
   const xEnd = toCanvas(0, maxQ, W, H, pad);
   const yEnd = toCanvas(maxP, 0, W, H, pad);
+  
   ctx.beginPath(); ctx.moveTo(origin.x, origin.y); ctx.lineTo(xEnd.x, origin.y); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(origin.x, origin.y); ctx.lineTo(origin.x, yEnd.y); ctx.stroke();
 
@@ -312,7 +311,7 @@ function draw(price) {
     ctx.fillText(f.minAC, x - 8, y + 3);
   });
 
-  // 유리에 투명하게 맺히는 수확/공급 면적 드로잉
+  // 진입 기업 면적 색상 채우기
   let cumQ2 = 0;
   let currentTotalQ = 0;
   firms.forEach(f => {
@@ -321,14 +320,14 @@ function draw(price) {
       const qEnd = cumQ2 + f.qty;
       const c1 = toCanvas(f.minAC, qStart, W, H, pad);
       const c2 = toCanvas(price, qEnd, W, H, pad);
-      ctx.fillStyle = f.color + '22'; /* 투명 젤리 면적 광택 구현 */
+      ctx.fillStyle = f.color + '22';
       ctx.fillRect(c1.x, c2.y, c2.x - c1.x, origin.y - c2.y);
       cumQ2 = qEnd;
       currentTotalQ = qEnd;
     }
   });
 
-  // 우상향 공급 본선
+  // 장기 공급선 본선
   ctx.beginPath();
   ctx.strokeStyle = 'var(--accent-main)';
   ctx.lineWidth = 4;
@@ -339,7 +338,7 @@ function draw(price) {
   });
   ctx.stroke();
 
-  // 균형 포인트 점선 가이드
+  // 균형 점선 인디케이터
   const curCoord = toCanvas(price, currentTotalQ, W, H, pad);
   ctx.strokeStyle = 'var(--accent-indicator)';
   ctx.lineWidth = 1.5;
@@ -361,7 +360,7 @@ function draw(price) {
     ctx.fillText('Q=' + currentTotalQ, curCoord.x, origin.y + 16);
   }
 
-  // 앵커 포인트 서클 칩 드로잉
+  // 앵커 도트 그리기
   let cumBefore = 0;
   firms.forEach((f) => {
     const cumAfter = cumBefore + f.qty;
@@ -399,7 +398,6 @@ function update(price) {
     const entered = price >= f.minAC;
     
     if (entered) {
-      // 투명 유리에 고유 네온 컬러가 스며드는 듯한 광택 연출
       card.style.borderColor = f.color;
       card.style.background = f.color + '22'; 
       card.style.transform = 'translateY(-5px) scale(1.02)';
@@ -424,14 +422,13 @@ function update(price) {
 
   draw(price);
 
-  // [수정 완료] 피드백 반영: '버블 활성화' 표현 제외 및 자연스러운 '진입' 문구 통일
+  // 하단 텍스트 가이드
   const expEl = document.getElementById('explanation');
   const activeFirmsText = enteredNames.map(name => `<strong>${name}</strong>`).join(', ');
 
   if(enteredNames.length === 0) {
     expEl.innerHTML = `현재 가격 <strong>${price}</strong>: 아직 어떤 기업도 공장을 돌릴 수 있는 최소 장기 평균비용을 충족하지 못해 시장 공급량이 <strong>0</strong>인 상태입니다.`;
   } else {
-    // 아직 진입 안 한 기업 분류
     firms.forEach(f => { if(price < f.minAC) pendingFirms.push(f); });
     
     if(pendingFirms.length > 0) {
