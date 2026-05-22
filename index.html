@@ -8,16 +8,17 @@
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
   :root {
-    --bg-main: #eff2f9;
+    /* 배경을 완전한 흰색(#ffffff)으로 변경 */
+    --bg-main: #ffffff;
     --text: #1d1d1f;
     --muted: #6e6e73;
     --accent-main: #0071e3;
     --accent-indicator: #ff3b30;
     
-    /* 리얼 글라스 수치: 더 투명하게, 더 흐리게 */
-    --glass-bg: rgba(255, 255, 255, 0.22);
-    --glass-border: rgba(255, 255, 255, 0.45);
-    --card-glass: rgba(255, 255, 255, 0.15);
+    /* 흰 배경 위에 부드럽게 얹어지도록 유리 투명도와 그림자 미세 조정 */
+    --glass-bg: rgba(245, 247, 250, 0.6);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --card-glass: rgba(255, 255, 255, 0.8);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -37,28 +38,9 @@
     overflow-x: hidden;
   }
 
-  /* 유리 뒤에서 투명도를 증명해 줄 화려한 네온 오일 구체들 */
-  .bg-glow-1 {
-    position: fixed; top: 15%; left: 15%; width: 350px; height: 350px;
-    background: linear-gradient(135deg, #80cafb 0%, #4c47f5 100%);
-    border-radius: 50%; filter: blur(60px); opacity: 0.45; z-index: -1;
-    animation: float 12s infinite alternate ease-in-out;
-  }
-  .bg-glow-2 {
-    position: fixed; bottom: 15%; right: 10%; width: 400px; height: 400px;
-    background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
-    border-radius: 50%; filter: blur(70px); opacity: 0.5; z-index: -1;
-    animation: float 16s infinite alternate-reverse ease-in-out;
-  }
-
-  @keyframes float {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(40px, 30px) scale(1.1); }
-  }
-
   h1 {
     font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em;
-    text-align: center; color: #111827; text-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    text-align: center; color: #111827;
   }
 
   .subtitle {
@@ -71,17 +53,17 @@
     width: 100%; max-width: 800px; z-index: 1;
   }
 
-  /* 서리가 내린 듯 영롱하고 두꺼운 유리 질감 패널 */
+  /* 흰 배경 위에서 고급스럽게 뜨는 미니멀 패널 스타일 */
   .panel-box {
     background: var(--glass-bg);
-    backdrop-filter: blur(35px) saturate(200%);
-    -webkit-backdrop-filter: blur(35px) saturate(200%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     border-radius: 24px;
     padding: 24px;
     box-shadow: 
-      0 12px 40px rgba(31, 38, 135, 0.06),
-      inset 0 1px 2px rgba(255, 255, 255, 0.6);
+      0 8px 32px rgba(0, 0, 0, 0.03),
+      inset 0 1px 2px rgba(255, 255, 255, 1);
   }
 
   .section-title {
@@ -94,14 +76,12 @@
   /* 개별 카드 투명 유리 텍스처 */
   .firm-card {
     background: var(--card-glass);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: 18px;
     padding: 14px;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     flex: 1; min-width: 115px; text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
   }
 
   .firm-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
@@ -110,8 +90,8 @@
   .firm-status {
     font-size: 0.72rem; margin-top: 10px; font-weight: 700;
     display: inline-block; padding: 4px 12px; border-radius: 20px;
-    background: rgba(255, 255, 255, 0.4); color: var(--muted);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.04); color: var(--muted);
+    border: 1px solid rgba(0, 0, 0, 0.02);
     transition: all 0.3s ease;
   }
 
@@ -140,14 +120,14 @@
 
   /* 설명 박스 젤리 유리 질감 */
   .explanation {
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(35px) saturate(200%);
-    -webkit-backdrop-filter: blur(35px) saturate(200%);
+    background: rgba(245, 247, 250, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
     border-left: 6px solid var(--accent-main);
     border-radius: 20px; padding: 20px 24px;
     font-size: 0.92rem; line-height: 1.7; color: #222224;
-    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.04), inset 0 1px 2px rgba(255,255,255,0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.02);
   }
 
   .explanation strong { color: var(--accent-main); font-weight: 700; }
@@ -162,10 +142,6 @@
 </style>
 </head>
 <body>
-
-<!-- 뒷배경에 위치하여 유리를 투명하게 돋보이게 해주는 오브젝트 -->
-<div class="bg-glow-1"></div>
-<div class="bg-glow-2"></div>
 
 <h1>Long-Run Market Supply Curve</h1>
 <p class="subtitle">슬라이더를 조절하여 가격 변동과 기업들의 시장 진입 상태를 관찰하세요</p>
@@ -282,7 +258,7 @@ function draw(price) {
     ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, H-pad.b); ctx.stroke();
   }
 
-  // [복구 완료] 축 드로잉 오류 완벽 수정 (ctx.stroke() 누락 수정)
+  // 축 드로잉
   ctx.strokeStyle = 'rgba(0,0,0,0.18)';
   ctx.lineWidth = 1.5;
   const origin = toCanvas(0, 0, W, H, pad);
@@ -320,7 +296,7 @@ function draw(price) {
       const qEnd = cumQ2 + f.qty;
       const c1 = toCanvas(f.minAC, qStart, W, H, pad);
       const c2 = toCanvas(price, qEnd, W, H, pad);
-      ctx.fillStyle = f.color + '22';
+      ctx.fillStyle = f.color + '15'; // 흰 배경에 맞춰 조금 더 투명하게 조정
       ctx.fillRect(c1.x, c2.y, c2.x - c1.x, origin.y - c2.y);
       cumQ2 = qEnd;
       currentTotalQ = qEnd;
@@ -399,9 +375,9 @@ function update(price) {
     
     if (entered) {
       card.style.borderColor = f.color;
-      card.style.background = f.color + '22'; 
-      card.style.transform = 'translateY(-5px) scale(1.02)';
-      card.style.boxShadow = `0 14px 28px ${f.color}28, inset 0 1px 1px rgba(255,255,255,0.4)`;
+      card.style.background = f.color + '15'; 
+      card.style.transform = 'translateY(-4px)';
+      card.style.boxShadow = `0 8px 20px ${f.color}15`;
       statusEl.textContent = '진입 완료';
       statusEl.style.color = '#ffffff';
       statusEl.style.background = f.color;
@@ -409,14 +385,14 @@ function update(price) {
       totalQ += f.qty;
       enteredNames.push(f.name);
     } else {
-      card.style.borderColor = 'rgba(255,255,255,0.45)';
+      card.style.borderColor = 'rgba(0, 0, 0, 0.06)';
       card.style.background = 'var(--card-glass)';
-      card.style.transform = 'translateY(0) scale(1)';
-      card.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.01)';
+      card.style.transform = 'translateY(0)';
+      card.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.01)';
       statusEl.textContent = '대기중';
       statusEl.style.color = 'var(--muted)';
-      statusEl.style.background = 'rgba(255, 255, 255, 0.3)';
-      statusEl.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+      statusEl.style.background = 'rgba(0, 0, 0, 0.04)';
+      statusEl.style.borderColor = 'transparent';
     }
   });
 
