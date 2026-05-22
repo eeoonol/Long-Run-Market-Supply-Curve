@@ -235,7 +235,7 @@ function draw(price) {
 
   ctx.clearRect(0, 0, W, H);
 
-  // 내부 모던 점선 가이드
+  // 내부 모던 그리드 점선 가이드
   ctx.strokeStyle = 'rgba(0, 0, 0, 0.04)';
   ctx.lineWidth = 1;
   for(let p=20; p<=100; p+=20) {
@@ -277,7 +277,7 @@ function draw(price) {
     ctx.fillText(f.minAC, x - 8, y + 3);
   });
 
-  // 진입 기업 면적 색상 채우기
+  // 진입 기업 면적 색상 채우기 및 현재 실제 공급량 확정 로직
   let cumQ2 = 0;
   let currentTotalQ = 0;
   firms.forEach(f => {
@@ -293,7 +293,23 @@ function draw(price) {
     }
   });
 
-  // 장기 공급선 본선
+  // [중요 보정] 현재 가격선이 공급곡선(계단)과 마주치는 정확한 공급량(Q) 연산
+  // 공급곡선 위에 정확히 고정되도록 실시간 좌표를 명시적으로 계산합니다.
+  let exactQ = 0;
+  let accumulatedQ = 0;
+  for (let i = 0; i < firms.length; i++) {
+    if (price < firms[i].minAC) {
+      exactQ = accumulatedQ;
+      break;
+    }
+    accumulatedQ += firms[i].qty;
+    if (price >= firms[i].minAC && (i === firms.length - 1 || price < firms[i+1].minAC)) {
+      exactQ = accumulatedQ;
+      break;
+    }
+  }
+
+  // 장기 공급선 본선 그리기
   ctx.beginPath();
   ctx.strokeStyle = 'var(--accent-main)';
   ctx.lineWidth = 4;
@@ -304,39 +320,44 @@ function draw(price) {
   });
   ctx.stroke();
 
-  // [버그 수정 완료] 독립적인 상태 컨텍스트 세팅으로 균형 지점 빨간 점선 무조건 표시
-  const curCoord = toCanvas(price, currentTotalQ, W, H, pad);
-  ctx.save(); // 현재 캔버스 상태 저장
-  ctx.strokeStyle = 'var(--accent-indicator)';
-  ctx.lineWidth = 1.5;
-  ctx.setLineDash([4, 4]); // 점선 패턴 정의
+  // [빨간 점선 레이어 버그 근본적 해결]
+  // 추적된 exactQ와 슬라이더 price를 기반으로 정확한 캔버스 픽셀 좌표 바인딩
+  const curCoord = toCanvas(price, exactQ, W, H, pad);
   
-  // 수평 가이드 점선
+  ctx.save(); 
+  ctx.strokeStyle = 'var(--accent-indicator)';
+  ctx.lineWidth = 1.8; // 더 선명하게 보이도록 두께 강화
+  ctx.setLineDash([4, 4]); 
+  
+  // 1. 가격(Y축)에서 균형점까지 수평 점선
   ctx.beginPath(); 
   ctx.moveTo(origin.x, curCoord.y); 
   ctx.lineTo(curCoord.x, curCoord.y); 
   ctx.stroke();
   
-  // 수직 가이드 점선 (공급량이 있을 때만 내려오도록)
-  if(currentTotalQ > 0) {
+  // 2. 균형점에서 수량(X축)까지 수직 점선 (수량이 0보다 클 때만 명확하게 하강)
+  if(exactQ > 0) {
     ctx.beginPath(); 
     ctx.moveTo(curCoord.x, curCoord.y); 
     ctx.lineTo(curCoord.x, origin.y); 
     ctx.stroke();
   }
-  ctx.restore(); // 점선 설정을 해제하고 이전 상태 복구
+  ctx.restore(); 
 
-  // 축에 부착될 텍스트 인디케이터
+  // 빨간 인디케이터 수치 텍스트 고정 렌더링
   ctx.fillStyle = 'var(--accent-indicator)';
   ctx.font = '700 11px Pretendard, sans-serif';
+  
+  // Y축 가격 글자
   ctx.textAlign = 'right';
   ctx.fillText('P=' + price, origin.x - 8, curCoord.y + 4);
 
-  if(currentTotalQ > 0) {
+  // X축 공급량 글자
+  if(exactQ > 0) {
     ctx.textBaseline = 'top';
     ctx.textAlign = 'center';
-    ctx.fillText('Q=' + currentTotalQ, curCoord.x, origin.y + 6);
-    ctx.textBaseline = 'alphabetic'; // 기본값 복구
+    ctx.fillText('Q=' + exactQ, curCoord.x, origin.y + 6);
+    ctx.textBaseline = 'alphabetic'; 
   }
 
   // 앵커 도트 그리기
