@@ -1,288 +1,263 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>장기 공급곡선</title>
-
 <style>
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
-:root {
-  --bg:#0e0e12;
-  --panel:#16161d;
-  --border:#2a2a38;
-  --accent1:#f7c948;
-  --accent2:#e05c5c;
-  --accent3:#5ce0b0;
-  --accent4:#5c9ee0;
-  --text:#e8e8f0;
-  --muted:#888899;
-}
-
-* { box-sizing:border-box; margin:0; padding:0; }
-
-body {
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Pretendard', sans-serif;
-  min-height:100vh;
-  padding:24px 16px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:24px;
-}
-
-h1 {
-  font-size:1.1rem;
-  color:var(--accent1);
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  text-align:center;
-  border-bottom:1px solid var(--border);
-  padding-bottom:12px;
-  width:100%;
-  max-width:850px;
-}
-
-.subtitle {
-  font-size:0.78rem;
-  color:var(--muted);
-  text-align:center;
-  margin-top:4px;
-}
-
-.container {
-  width:100%;
-  max-width:850px;
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-}
-
-.panel {
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:20px 24px;
-}
-
-.section-title {
-  font-size:0.75rem;
-  color:var(--muted);
-  text-transform:uppercase;
-  letter-spacing:0.1em;
-  margin-bottom:14px;
-}
-
-.option-grid {
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:10px;
-}
-
-.option-btn {
-  background:transparent;
-  color:var(--muted);
-  border:1.5px solid var(--border);
-  border-radius:10px;
-  padding:13px 10px;
-  font-family:'Pretendard', sans-serif;
-  cursor:pointer;
-  transition:0.25s;
-}
-
-.option-btn strong {
-  display:block;
-  color:var(--text);
-  margin-bottom:4px;
-}
-
-.option-btn span {
-  font-size:0.7rem;
-}
-
-.option-btn.active {
-  border-color:var(--accent1);
-  background:rgba(247,201,72,0.12);
-}
-
-.firms-grid {
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.firm-card {
-  border-radius:8px;
-  padding:10px 14px;
-  border:1.5px solid;
-  transition:all 0.35s;
-  min-width:90px;
-  text-align:center;
-}
-
-.firm-name {
-  font-size:0.85rem;
-  font-weight:700;
-  margin-bottom:4px;
-}
-
-.firm-cost {
-  font-size:0.72rem;
-  color:var(--muted);
-}
-
-.firm-status {
-  font-size:0.65rem;
-  margin-top:6px;
-  font-weight:700;
-  letter-spacing:0.05em;
-}
-
-.slider-label {
-  font-size:0.82rem;
-  color:var(--muted);
-  margin-bottom:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.price-value {
-  font-size:1.1rem;
-  color:var(--accent1);
-  font-weight:700;
-}
-
-input[type=range] {
-  width:100%;
-  -webkit-appearance:none;
-  height:6px;
-  border-radius:3px;
-  background:var(--border);
-  outline:none;
-  cursor:pointer;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance:none;
-  width:20px;
-  height:20px;
-  border-radius:50%;
-  background:var(--accent1);
-  box-shadow:0 0 8px rgba(247,201,72,0.5);
-}
-
-canvas {
-  width:100%;
-  height:340px;
-  display:block;
-  border-radius:6px;
-}
-
-.legend {
-  display:flex;
-  flex-wrap:wrap;
-  gap:14px;
-  font-size:0.72rem;
-  color:var(--muted);
-  justify-content:center;
-  margin-top:14px;
-}
-
-.legend-item {
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-
-.legend-dot {
-  width:10px;
-  height:10px;
-  border-radius:50%;
-}
-
-.legend-line {
-  width:22px;
-  height:3px;
-  border-radius:2px;
-}
-
-.explanation {
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-left:3px solid var(--accent1);
-  border-radius:12px;
-  padding:16px 20px;
-  font-size:0.88rem;
-  line-height:1.75;
-  min-height:72px;
-}
-
-.explanation strong {
-  color:var(--accent1);
-}
-
-@media (max-width:700px) {
-  .option-grid {
-    grid-template-columns:1fr;
+  :root {
+    --bg: #0e0e12;
+    --panel: #16161d;
+    --border: #2a2a38;
+    --accent1: #f7c948;
+    --accent2: #e05c5c;
+    --accent3: #5ce0b0;
+    --accent4: #5c9ee0;
+    --text: #e8e8f0;
+    --muted: #888899;
   }
-}
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', sans-serif;
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  h1 {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 1.1rem;
+    color: var(--accent1);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    width: 100%;
+    max-width: 800px;
+  }
+
+  .subtitle {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-family: 'Pretendard', sans-serif;
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+  }
+
+  /* Slider */
+  .slider-section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+
+  .slider-label {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .price-value {
+    font-size: 1.1rem;
+    color: var(--accent1);
+    font-weight: 700;
+  }
+
+  input[type=range] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent1);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(247,201,72,0.5);
+  }
+
+  /* Firms strip */
+  .firms-section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+
+  .section-title {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+  }
+
+  .firms-grid {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .firm-card {
+    border-radius: 8px;
+    padding: 10px 14px;
+    border: 1.5px solid;
+    transition: all 0.4s cubic-bezier(.4,0,.2,1);
+    min-width: 90px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .firm-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .firm-card.active::before { opacity: 0.12; }
+
+  .firm-name {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .firm-cost {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .firm-status {
+    font-size: 0.65rem;
+    margin-top: 6px;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  /* Main graph */
+  .graph-section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+
+  canvas {
+    width: 100%;
+    display: block;
+    border-radius: 6px;
+  }
+
+  /* Explanation box */
+  .explanation {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent1);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: var(--text);
+    min-height: 64px;
+    transition: all 0.3s;
+  }
+
+  .explanation strong { color: var(--accent1); }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 0.72rem;
+    color: var(--muted);
+    justify-content: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .legend-line {
+    width: 22px; height: 3px;
+    border-radius: 2px;
+  }
 </style>
 </head>
-
 <body>
 
 <h1>Long-Run Market Supply Curve</h1>
-<p class="subtitle">가격(P)을 조절하고 산업 유형별 장기 공급곡선을 비교하세요</p>
+<p class="subtitle">가격(P)을 올려 기업들의 진입 순서를 확인하세요</p>
 
 <div class="container">
 
-  <div class="panel">
-    <div class="section-title">산업 유형 선택</div>
-    <div class="option-grid">
-      <button class="option-btn active" data-type="constant">
-        <strong>Constant-Cost</strong>
-        <span>비용 일정 산업 · 수평 LRS</span>
-      </button>
-      <button class="option-btn" data-type="increasing">
-        <strong>Increasing-Cost</strong>
-        <span>비용 증가 산업 · 우상향 LRS</span>
-      </button>
-      <button class="option-btn" data-type="decreasing">
-        <strong>Decreasing-Cost</strong>
-        <span>비용 감소 산업 · 우하향 LRS</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="panel">
-    <div class="section-title">기업별 최소 평균비용 AC<sub>min</sub> — 진입 기준</div>
+  <!-- Firms -->
+  <div class="firms-section">
+    <div class="section-title">기업별 최소 평균비용 (AC<sub>min</sub>) — 진입 기준</div>
     <div class="firms-grid" id="firmsGrid"></div>
   </div>
 
-  <div class="panel">
+  <!-- Slider -->
+  <div class="slider-section">
     <div class="slider-label">
       <span>시장 가격 (P)</span>
       <span class="price-value" id="priceDisplay">P = 30</span>
     </div>
     <input type="range" id="priceSlider" min="10" max="110" value="30" step="1">
-    <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.68rem;color:var(--muted)">
-      <span>낮은 가격</span>
-      <span>높은 가격</span>
+    <div style="display:flex;justify-content:space-between;margin-top:6px;font-family:'Pretendard',sans-serif;font-size:0.68rem;color:var(--muted)">
+      <span>낮은 가격</span><span>높은 가격</span>
     </div>
   </div>
 
-  <div class="panel">
+  <!-- Graph -->
+  <div class="graph-section">
     <div class="section-title">장기 시장 공급곡선</div>
-    <canvas id="supplyCanvas"></canvas>
-
-    <div class="legend">
+    <canvas id="supplyCanvas" height="320"></canvas>
+    <div class="legend" style="margin-top:14px">
       <div class="legend-item">
         <div class="legend-line" style="background:var(--accent1)"></div>
-        <span>장기 공급곡선</span>
+        <span>장기 공급곡선 (LR Supply)</span>
       </div>
       <div class="legend-item">
         <div class="legend-dot" style="background:var(--accent3)"></div>
@@ -293,17 +268,246 @@ canvas {
         <span>미진입 기업</span>
       </div>
       <div class="legend-item">
-        <div class="legend-line" style="background:none;border-top:2px dashed var(--accent2)"></div>
+        <div class="legend-line" style="background:var(--accent2);height:2px;border-top:2px dashed var(--accent2);background:none"></div>
         <span>현재 가격</span>
       </div>
     </div>
   </div>
 
+  <!-- Explanation -->
   <div class="explanation" id="explanation"></div>
 
 </div>
 
 <script>
-const baseFirms = [
-  { name:'Firm A', baseAC:20, color:'#5ce0b0', qty:15 },
-  { name:'Firm B', baseAC:35, color:'#5
+const firms = [
+  { name: 'Firm A', minAC: 20,  color: '#5ce0b0', qty: 15 },
+  { name: 'Firm B', minAC: 35,  color: '#5c9ee0', qty: 18 },
+  { name: 'Firm C', minAC: 50,  color: '#b05ce0', qty: 22 },
+  { name: 'Firm D', minAC: 65,  color: '#e0905c', qty: 25 },
+  { name: 'Firm E', minAC: 80,  color: '#e05c5c', qty: 20 },
+  { name: 'Firm F', minAC: 95,  color: '#e05c90', qty: 17 },
+];
+
+// Build firms grid
+const grid = document.getElementById('firmsGrid');
+firms.forEach((f, i) => {
+  const card = document.createElement('div');
+  card.className = 'firm-card';
+  card.id = `firm-${i}`;
+  card.style.borderColor = f.color + '60';
+  card.innerHTML = `
+    <div class="firm-name" style="color:${f.color}">${f.name}</div>
+    <div class="firm-cost">AC<sub>min</sub> = ${f.minAC}</div>
+    <div class="firm-status" id="status-${i}">대기중</div>
+  `;
+  card.querySelector('::before');
+  grid.appendChild(card);
+});
+
+// Canvas setup
+const canvas = document.getElementById('supplyCanvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = (rect.width - 48) * dpr;
+  canvas.height = 320 * dpr;
+  canvas.style.width = (rect.width - 48) + 'px';
+  canvas.style.height = '320px';
+  ctx.scale(dpr, dpr);
+  draw(+document.getElementById('priceSlider').value);
+}
+
+// Build supply curve points
+// cumulative qty as price rises
+function getSupplyCurvePoints() {
+  const sorted = [...firms].sort((a,b) => a.minAC - b.minAC);
+  const pts = [{p: 0, q: 0}];
+  let cumQ = 0;
+  sorted.forEach(f => {
+    pts.push({p: f.minAC, q: cumQ});       // just before entry: qty unchanged
+    cumQ += f.qty;
+    pts.push({p: f.minAC, q: cumQ});       // at entry price: qty jumps
+  });
+  pts.push({p: 110, q: cumQ});
+  return pts;
+}
+
+const supplyPts = getSupplyCurvePoints();
+const maxQ = supplyPts[supplyPts.length-1].q + 10;
+const maxP = 115;
+
+function toCanvas(p, q, W, H, pad) {
+  const x = pad.l + (q / maxQ) * (W - pad.l - pad.r);
+  const y = pad.t + (1 - p / maxP) * (H - pad.t - pad.b);
+  return {x, y};
+}
+
+function draw(price) {
+  const W = canvas.width / (window.devicePixelRatio||1);
+  const H = canvas.height / (window.devicePixelRatio||1);
+  const pad = {l:52, r:20, t:20, b:46};
+
+  ctx.clearRect(0,0,W,H);
+
+  // Background grid
+  ctx.strokeStyle = '#2a2a3840';
+  ctx.lineWidth = 1;
+  for(let p=0; p<=110; p+=20) {
+    const {x:x0,y} = toCanvas(p,0,W,H,pad);
+    const {x:x1} = toCanvas(p,maxQ,W,H,pad);
+    ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke();
+  }
+  for(let q=0; q<=maxQ; q+=20) {
+    const {x,y:y0} = toCanvas(0,q,W,H,pad);
+    const {x:bx,y:y1} = toCanvas(maxP,q,W,H,pad);
+    ctx.beginPath(); ctx.moveTo(x,y0); ctx.lineTo(bx,y1); ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = '#555566';
+  ctx.lineWidth = 1.5;
+  const origin = toCanvas(0,0,W,H,pad);
+  const xEnd = toCanvas(0,maxQ+5,W,H,pad);
+  const yEnd = toCanvas(maxP,0,W,H,pad);
+  ctx.beginPath(); ctx.moveTo(origin.x, origin.y); ctx.lineTo(xEnd.x, origin.y); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(origin.x, origin.y); ctx.lineTo(origin.x, yEnd.y); ctx.stroke();
+
+  // Axis labels
+  ctx.fillStyle = '#888899';
+  ctx.font = '11px Pretendard, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Q (시장 공급량)', (origin.x + xEnd.x)/2, H - 8);
+  ctx.save();
+  ctx.translate(14, (origin.y + yEnd.y)/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText('P (가격)', 0, 0);
+  ctx.restore();
+
+  // P axis ticks
+  [20,35,50,65,80,95].forEach(p => {
+    const {x,y} = toCanvas(p,0,W,H,pad);
+    ctx.fillStyle = '#666677';
+    ctx.font = '9px Pretendard';
+    ctx.textAlign = 'right';
+    ctx.fillText(p, x-2, origin.y+14);
+  });
+
+  // Shade active firms area
+  const activeFirms = firms.filter(f => price >= f.minAC);
+  let cumQ2 = 0;
+  activeFirms.sort((a,b)=>a.minAC-b.minAC).forEach(f => {
+    const qStart = cumQ2;
+    const qEnd = cumQ2 + f.qty;
+    const c1 = toCanvas(f.minAC, qStart, W,H,pad);
+    const c2 = toCanvas(price, qEnd, W,H,pad);
+    ctx.fillStyle = f.color + '18';
+    ctx.fillRect(c1.x, c2.y, c2.x - c1.x, origin.y - c2.y);
+    cumQ2 = qEnd;
+  });
+
+  // Supply curve
+  ctx.beginPath();
+  ctx.strokeStyle = '#f7c948';
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  supplyPts.forEach((pt, i) => {
+    const {x,y} = toCanvas(pt.p, pt.q, W,H,pad);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  // Current price line (dashed red)
+  const py = toCanvas(price,0,W,H,pad).y;
+  ctx.beginPath();
+  ctx.strokeStyle = '#e05c5c';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5,4]);
+  ctx.moveTo(origin.x, py);
+  ctx.lineTo(xEnd.x - 10, py);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // P label on y-axis
+  ctx.fillStyle = '#e05c5c';
+  ctx.font = 'bold 11px Pretendard, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('P='+price, origin.x - 3, py + 4);
+
+  // Entry points: dots where each firm enters
+  firms.sort((a,b)=>a.minAC-b.minAC).forEach((f, idx) => {
+    const cumBefore = firms.sort((a,b)=>a.minAC-b.minAC).slice(0,idx).reduce((s,x)=>s+x.qty,0);
+    const cumAfter = cumBefore + f.qty;
+    const entered = price >= f.minAC;
+    // dot at entry corner
+    const {x,y} = toCanvas(f.minAC, cumAfter, W,H,pad);
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, Math.PI*2);
+    ctx.fillStyle = entered ? f.color : '#2a2a38';
+    ctx.fill();
+    ctx.strokeStyle = f.color;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // label
+    if(entered) {
+      ctx.fillStyle = f.color;
+      ctx.font = '9px Pretendard, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(f.name, x+7, y+3);
+    }
+  });
+  // Re-sort to original
+  firms.sort((a,b)=>a.minAC-b.minAC);
+}
+
+function update(price) {
+  document.getElementById('priceDisplay').textContent = 'P = ' + price;
+
+  // Update firm cards
+  const sortedFirms = [...firms].sort((a,b)=>a.minAC-b.minAC);
+  sortedFirms.forEach((f, i) => {
+    const origIdx = firms.indexOf(f);
+    const card = document.getElementById(`firm-${origIdx}`);
+    const statusEl = document.getElementById(`status-${origIdx}`);
+    const entered = price >= f.minAC;
+    card.style.borderColor = entered ? f.color : '#2a2a3860';
+    card.style.background = entered ? f.color + '15' : 'transparent';
+    statusEl.textContent = entered ? '✓ 진입' : '대기중';
+    statusEl.style.color = entered ? f.color : '#555566';
+  });
+
+  draw(price);
+
+  // Explanation
+  const entered = firms.filter(f=>price>=f.minAC).sort((a,b)=>a.minAC-b.minAC);
+  const pending = firms.filter(f=>price<f.minAC).sort((a,b)=>a.minAC-b.minAC);
+  const totalQ = entered.reduce((s,f)=>s+f.qty,0);
+  let msg = '';
+  if(entered.length === 0) {
+    msg = `P = <strong>${price}</strong> 에서는 아직 진입한 기업이 없습니다. 가격을 올려보세요.`;
+  } else if(pending.length > 0) {
+    const next = pending[0];
+    msg = `P = <strong>${price}</strong>: <strong>${entered.map(f=>f.name).join(', ')}</strong>이 진입. 
+    총 공급량 = <strong>${totalQ}</strong>. 
+    다음 기업(${next.name}, AC<sub>min</sub>=<strong>${next.minAC}</strong>)은 가격이 더 올라야 진입합니다.`;
+  } else {
+    msg = `P = <strong>${price}</strong>: 모든 기업(<strong>${entered.map(f=>f.name).join(', ')}</strong>)이 진입. 
+    시장 총 공급량 = <strong>${totalQ}</strong>. 
+    → 장기 공급곡선은 이렇게 가격 상승에 따라 <strong>우상향</strong>합니다.`;
+  }
+  document.getElementById('explanation').innerHTML = msg;
+}
+
+document.getElementById('priceSlider').addEventListener('input', e => {
+  update(+e.target.value);
+});
+
+window.addEventListener('resize', resize);
+resize();
+update(30);
+</script>
+</body>
+</html>
